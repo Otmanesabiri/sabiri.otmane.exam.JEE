@@ -84,13 +84,12 @@
             <div class="input-group">
               <input 
                 type="range" 
-                class="form-range" 
+                class="form-range w-100" 
                 id="duration" 
                 [(ngModel)]="duration" 
                 [min]="durations[creditType].min" 
                 [max]="durations[creditType].max" 
                 (change)="calculateLoan()"
-                style="width: 100%;"
               >
             </div>
             <div class="text-center mt-2">
@@ -105,14 +104,13 @@
             <div class="input-group">
               <input 
                 type="range" 
-                class="form-range" 
+                class="form-range interest-rate-range" 
                 id="interestRate" 
                 [(ngModel)]="interestRate" 
                 [min]="interestRates[creditType].min" 
                 [max]="interestRates[creditType].max" 
                 step="0.001" 
                 (change)="calculateLoan()"
-                style="width: 100%;"
               >
             </div>
             <div class="text-center mt-2">
@@ -173,10 +171,11 @@
           <div class="row mt-3">
             <div class="col-12">
               <h5>Payment Breakdown</h5>
-              <div class="progress mb-3" style="height: 25px;">
+              <div class="progress mb-3 custom-progress-height">
                 <div 
                   class="progress-bar bg-primary" 
                   role="progressbar"
+                  aria-label="Principal"
                   [style.width]="(amount / totalPayment * 100) + '%'"
                   [attr.aria-valuenow]="amount / totalPayment * 100"
                   aria-valuemin="0" 
@@ -187,6 +186,7 @@
                 <div 
                   class="progress-bar bg-warning" 
                   role="progressbar"
+                  aria-label="Interest"
                   [style.width]="(totalInterest / totalPayment * 100) + '%'"
                   [attr.aria-valuenow]="totalInterest / totalPayment * 100"
                   aria-valuemin="0" 

@@ -15,7 +15,7 @@
   <div *ngIf="repaymentSuccess" class="alert alert-success alert-dismissible fade show">
     <i class="bi bi-check-circle-fill me-2"></i>
     Repayment added successfully!
-    <button type="button" class="btn-close" (click)="repaymentSuccess = false"></button>
+    <button type="button" class="btn-close" (click)="repaymentSuccess = false" aria-label="Close"></button>
   </div>
 
   <!-- Credit Details -->
@@ -78,38 +78,38 @@
             </div>
             
             <!-- Personal Credit Details -->
-            <div *ngIf="credit.type === 'PERSONAL'">
+            <ng-container *ngIf="isPersonalCredit(credit)">
               <div class="row mb-3">
                 <div class="col-12">
                   <p class="mb-1 text-muted">Reason</p>
-                  <h5>{{ (credit as any).reason }}</h5>
+                  <h5>{{ credit.reason }}</h5>
                 </div>
               </div>
-            </div>
+            </ng-container>
             
             <!-- Mortgage Credit Details -->
-            <div *ngIf="credit.type === 'MORTGAGE'">
+            <ng-container *ngIf="isMortgageCredit(credit)">
               <div class="row mb-3">
                 <div class="col-12">
                   <p class="mb-1 text-muted">Property Type</p>
-                  <h5>{{ (credit as any).propertyType }}</h5>
+                  <h5>{{ credit.propertyType }}</h5>
                 </div>
               </div>
-            </div>
+            </ng-container>
             
             <!-- Professional Credit Details -->
-            <div *ngIf="credit.type === 'PROFESSIONAL'">
+            <ng-container *ngIf="isProfessionalCredit(credit)">
               <div class="row mb-3">
                 <div class="col-md-6">
                   <p class="mb-1 text-muted">Company</p>
-                  <h5>{{ (credit as any).companyName }}</h5>
+                  <h5>{{ credit.companyName }}</h5>
                 </div>
                 <div class="col-md-6">
                   <p class="mb-1 text-muted">Business Purpose</p>
-                  <h5>{{ (credit as any).reason }}</h5>
+                  <h5>{{ credit.reason }}</h5>
                 </div>
               </div>
-            </div>
+            </ng-container>
           </div>
         </div>
         
@@ -120,8 +120,10 @@
           </div>
           <div class="card-body">
             <div class="mb-3">
-              <div class="progress" style="height: 20px;">
-                <div class="progress-bar bg-success" 
+              <div class="progress progress-bar-container">
+                <div class="progress-bar bg-success"
+                     role="progressbar"
+                     aria-label="Payment progress"
                      [style.width]="getCompletionPercentage() + '%'" 
                      [attr.aria-valuenow]="getCompletionPercentage()" 
                      aria-valuemin="0" 

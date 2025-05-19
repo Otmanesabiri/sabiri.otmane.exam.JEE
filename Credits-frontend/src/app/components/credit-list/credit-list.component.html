@@ -41,6 +41,7 @@
         class="form-select" 
         [(ngModel)]="statusFilter"
         (change)="onStatusFilterChange($event)"
+        aria-label="Filter by status"
       >
         <option value="ALL">All Statuses</option>
         <option value="PENDING">Pending</option>
@@ -53,6 +54,7 @@
         class="form-select"
         [(ngModel)]="creditTypeFilter"
         (change)="onCreditTypeFilterChange($event)"
+        aria-label="Filter by credit type"
       >
         <option value="ALL">All Credit Types</option>
         <option value="PERSONAL">Personal Credits</option>
@@ -109,14 +111,16 @@
               <button 
                 *ngIf="credit.status === 'PENDING'" 
                 class="btn btn-outline-success"
-                (click)="changeCreditStatus(credit.id, 'APPROVED')"
+                (click)="changeCreditStatus(credit.id, CreditStatus.APPROVED)"
+                aria-label="Approve credit"
               >
                 <i class="bi bi-check-circle"></i>
               </button>
               <button 
                 *ngIf="credit.status === 'PENDING'" 
                 class="btn btn-outline-danger"
-                (click)="changeCreditStatus(credit.id, 'REJECTED')"
+                (click)="changeCreditStatus(credit.id, CreditStatus.REJECTED)"
+                aria-label="Reject credit"
               >
                 <i class="bi bi-x-circle"></i>
               </button>

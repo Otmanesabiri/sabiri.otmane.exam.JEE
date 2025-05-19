@@ -1,12 +1,52 @@
 <div class="container mt-4">
   <h1 class="mb-4">Dashboard</h1>
 
+  <!-- Quick Actions -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Quick Actions</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <a routerLink="/customers" class="btn btn-outline-primary d-block">
+                <i class="bi bi-people fs-4 d-block mb-2"></i>
+                Manage Customers
+              </a>
+            </div>
+            <div class="col-md-3 mb-3">
+              <a routerLink="/accounts" class="btn btn-outline-success d-block">
+                <i class="bi bi-bank fs-4 d-block mb-2"></i>
+                View Accounts
+              </a>
+            </div>
+            <div class="col-md-3 mb-3">
+              <a routerLink="/credits" class="btn btn-outline-info d-block">
+                <i class="bi bi-cash-stack fs-4 d-block mb-2"></i>
+                Manage Credits
+              </a>
+            </div>
+            <div class="col-md-3 mb-3">
+              <a routerLink="/credit-simulation" class="btn btn-outline-dark d-block">
+                <i class="bi bi-calculator fs-4 d-block mb-2"></i>
+                Simulate Credit
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="row mb-4">
     <div class="col-md-4">
       <div class="card text-white bg-primary">
         <div class="card-body">
           <h5 class="card-title">Total Customers</h5>
           <p class="card-text fs-4">{{ totalCustomers }}</p>
+          <a routerLink="/customers" class="btn btn-sm btn-outline-light mt-2">View All</a>
         </div>
       </div>
     </div>
@@ -15,6 +55,7 @@
         <div class="card-body">
           <h5 class="card-title">Total Accounts</h5>
           <p class="card-text fs-4">{{ totalAccounts }}</p>
+          <a routerLink="/accounts" class="btn btn-sm btn-outline-light mt-2">View All</a>
         </div>
       </div>
     </div>
@@ -23,6 +64,7 @@
         <div class="card-body">
           <h5 class="card-title">Total Balance</h5>
           <p class="card-text fs-4">{{ totalBalance | currency }}</p>
+          <a routerLink="/operations" class="btn btn-sm btn-outline-light mt-2">Operations</a>
         </div>
       </div>
     </div>
@@ -31,8 +73,9 @@
   <div class="row">
     <div class="col-lg-6 mb-4">
       <div class="card">
-        <div class="card-header">
-          Account Types
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Account Types</span>
+          <a routerLink="/accounts" class="btn btn-sm btn-outline-primary">Details</a>
         </div>
         <div class="card-body">
           <canvas baseChart class="chart"
@@ -48,8 +91,9 @@
     </div>
     <div class="col-lg-6 mb-4">
       <div class="card">
-        <div class="card-header">
-          Account Statuses
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Account Statuses</span>
+          <a routerLink="/accounts" class="btn btn-sm btn-outline-primary">Details</a>
         </div>
         <div class="card-body">
           <canvas baseChart class="chart"
@@ -58,6 +102,77 @@
             [type]="accountStatusesChartType"
             [legend]="accountStatusesChartLegend">
           </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Credit Section -->
+  <div class="row mt-4 mb-3">
+    <div class="col-12">
+      <h2>Credit Overview</h2>
+      <p class="text-muted">For detailed statistics, visit the <a routerLink="/credit-dashboard">Credit Dashboard</a>.</p>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card border-primary">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <span>Credit Applications</span>
+          <a routerLink="/credits" class="btn btn-sm btn-outline-light">View All</a>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col">
+              <div class="mb-3">
+                <span class="badge bg-warning text-dark p-2">Pending</span>
+              </div>
+              <h3>0</h3>
+            </div>
+            <div class="col">
+              <div class="mb-3">
+                <span class="badge bg-success p-2">Approved</span>
+              </div>
+              <h3>0</h3>
+            </div>
+            <div class="col">
+              <div class="mb-3">
+                <span class="badge bg-danger p-2">Rejected</span>
+              </div>
+              <h3>0</h3>
+            </div>
+          </div>
+          <div class="d-grid mt-3">
+            <a routerLink="/credits/new" class="btn btn-outline-primary">
+              <i class="bi bi-plus-circle"></i> New Credit Application
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+      <div class="card border-info">
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+          <span>Credit Tools</span>
+          <a routerLink="/credit-dashboard" class="btn btn-sm btn-outline-light">Dashboard</a>
+        </div>
+        <div class="card-body">
+          <div class="list-group">
+            <a routerLink="/credit-simulation" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+              Credit Simulation
+              <i class="bi bi-calculator"></i>
+            </a>
+            <a routerLink="/credits" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+              Manage Credits
+              <i class="bi bi-list-check"></i>
+            </a>
+            <a routerLink="/credit-dashboard" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+              Credit Analytics
+              <i class="bi bi-bar-chart"></i>
+            </a>
+          </div>
         </div>
       </div>
     </div>

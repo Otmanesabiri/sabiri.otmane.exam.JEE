@@ -1,0 +1,152 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h2>Credit Dashboard</h2>
+      <p class="text-muted">Overview and statistics of all credit applications</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+      <a routerLink="/credits" class="btn btn-outline-primary me-2">
+        <i class="bi bi-list"></i> All Credits
+      </a>
+      <a routerLink="/credits/new" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> New Credit
+      </a>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading credit data...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage && !isLoading" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!isLoading && !errorMessage">
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card summary-card text-center">
+          <div class="card-body">
+            <h5 class="card-title">Total Credits</h5>
+            <h2 class="mb-0">{{ totalCredits }}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card summary-card text-center">
+          <div class="card-body">
+            <h5 class="card-title">Acceptance Rate</h5>
+            <h2 class="mb-0">{{ acceptanceRate | number:'1.0-0' }}%</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card summary-card text-center">
+          <div class="card-body">
+            <h5 class="card-title">Total Amount</h5>
+            <h2 class="mb-0">{{ totalCreditAmount | currency }}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card summary-card text-center">
+          <div class="card-body">
+            <h5 class="card-title">Average Credit</h5>
+            <h2 class="mb-0">{{ avgCreditAmount | currency }}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Summary -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title mb-4">Credit Status Overview</h5>
+            <div class="row">
+              <div class="col-md-4 text-center mb-3">
+                <div class="status-card status-pending">
+                  <h3>{{ pendingCredits }}</h3>
+                  <p>Pending</p>
+                </div>
+              </div>
+              <div class="col-md-4 text-center mb-3">
+                <div class="status-card status-approved">
+                  <h3>{{ approvedCredits }}</h3>
+                  <p>Approved</p>
+                </div>
+              </div>
+              <div class="col-md-4 text-center mb-3">
+                <div class="status-card status-rejected">
+                  <h3>{{ rejectedCredits }}</h3>
+                  <p>Rejected</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row">
+      <!-- Credit Types Chart -->
+      <div class="col-md-6 mb-4">
+        <div class="card chart-card">
+          <div class="card-body">
+            <h5 class="card-title">Credits by Type</h5>
+            <div style="height: 300px;">
+              <canvas baseChart
+                [data]="creditTypesChartData"
+                [options]="creditTypesChartOptions"
+                [type]="creditTypesChartType">
+              </canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Credit Status Chart -->
+      <div class="col-md-6 mb-4">
+        <div class="card chart-card">
+          <div class="card-body">
+            <h5 class="card-title">Credits by Status</h5>
+            <div style="height: 300px;">
+              <canvas baseChart
+                [data]="creditStatusChartData"
+                [options]="creditStatusChartOptions"
+                [type]="creditStatusChartType">
+              </canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Credit Amount Chart -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card chart-card">
+          <div class="card-body">
+            <h5 class="card-title">Credit Amounts by Type</h5>
+            <div style="height: 300px;">
+              <canvas baseChart
+                [data]="creditAmountChartData"
+                [options]="creditAmountChartOptions"
+                [type]="creditAmountChartType">
+              </canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -62,8 +62,8 @@ public class DataLoader {
             // Existing bank account loading logic (simplified)
             Stream.of(customer1, customer2).forEach(customer -> {
                 try {
-                    bankAccountService.saveCurrentBankAccount(Math.random() * 90000, 9000, customer.getId(), "MAD");
-                    bankAccountService.saveSavingBankAccount(Math.random() * 120000, 5.5, customer.getId(), "MAD");
+                    bankAccountService.saveCurrentBankAccount(Math.random() * 90000, 9000, customer.getId());
+                    bankAccountService.saveSavingBankAccount(Math.random() * 120000, 5.5, customer.getId());
                 } catch (CustomerNotFoundException e) {
                     e.printStackTrace();
                 }

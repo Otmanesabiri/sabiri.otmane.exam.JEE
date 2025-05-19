@@ -28,14 +28,14 @@ export class CreditSimulationComponent implements OnInit {
   showFullSchedule: boolean = false;
   
   // Interest rate ranges by credit type
-  interestRates = {
+  interestRates: { [key: string]: { min: number, max: number } } = {
     personal: { min: 0.05, max: 0.12 },
     mortgage: { min: 0.03, max: 0.06 },
     professional: { min: 0.04, max: 0.09 }
   };
   
   // Duration ranges by credit type
-  durations = {
+  durations: { [key: string]: { min: number, max: number } } = {
     personal: { min: 3, max: 60 },
     mortgage: { min: 36, max: 360 },
     professional: { min: 12, max: 120 }

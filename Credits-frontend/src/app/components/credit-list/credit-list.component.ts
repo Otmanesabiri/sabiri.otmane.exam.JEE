@@ -17,6 +17,7 @@ export class CreditListComponent implements OnInit {
   filteredCredits: Credit[] = [];
   isLoading = false;
   errorMessage: string | null = null;
+  CreditStatus = CreditStatus; // Expose enum to template
 
   // Filters
   statusFilter: string = 'ALL';

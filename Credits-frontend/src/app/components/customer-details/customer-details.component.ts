@@ -8,6 +8,7 @@ import { CreditService } from '../../services/credit.service'; // Added
 import { Credit, Repayment } from '../../models/credit.model'; // Added
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
+
 @Component({
   selector: 'app-customer-details',
   standalone: true,

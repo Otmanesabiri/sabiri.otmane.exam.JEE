@@ -4,8 +4,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CreditService } from '../../services/credit.service';
 import { CustomerService } from '../../services/customer.service';
-import { CreditStatus, PersonalCredit, MortgageCredit, ProfessionalCredit, PropertyType } from '../../models/credit.model';
+import { Credit, CreditStatus, PersonalCredit, MortgageCredit, ProfessionalCredit, PropertyType } from '../../models/credit.model';
 import { Customer } from '../../models/customer.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-credit-form',
@@ -129,31 +130,27 @@ export class CreditFormComponent implements OnInit {
       ...formValue,
       requestDate: new Date(),
       status: CreditStatus.PENDING,
-      type: this.creditType.toUpperCase()
     };
     
     // Call the appropriate service method based on credit type
-    let saveOperation;
+    let saveOperation: Observable<Credit | PersonalCredit | MortgageCredit | ProfessionalCredit>;
     
     switch(this.creditType) {
       case 'personal':
         saveOperation = this.creditService.savePersonalCredit(credit as PersonalCredit);
         break;
-        
       case 'mortgage':
         saveOperation = this.creditService.saveMortgageCredit(credit as MortgageCredit);
         break;
-        
       case 'professional':
         saveOperation = this.creditService.saveProfessionalCredit(credit as ProfessionalCredit);
         break;
-        
       default:
         saveOperation = this.creditService.savePersonalCredit(credit as PersonalCredit);
     }
     
     saveOperation.subscribe({
-      next: (result) => {
+      next: (result: any) => {
         this.isLoading = false;
         this.successMessage = 'Credit application submitted successfully!';
         setTimeout(() => {
@@ -164,7 +161,7 @@ export class CreditFormComponent implements OnInit {
           }
         }, 1500);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Failed to submit credit application. Please try again.';
         console.error('Error submitting credit application', err);

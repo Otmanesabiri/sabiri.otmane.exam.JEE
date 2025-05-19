@@ -219,4 +219,14 @@ export class CreditDetailsComponent implements OnInit {
   openAmortizationTable(content: any): void {
     this.modalService.open(content, { size: 'xl', scrollable: true });
   }
+  
+  isPersonalCredit(credit: Credit | null): credit is PersonalCredit {
+    return !!credit && credit.type === 'PERSONAL';
+  }
+  isMortgageCredit(credit: Credit | null): credit is MortgageCredit {
+    return !!credit && credit.type === 'MORTGAGE';
+  }
+  isProfessionalCredit(credit: Credit | null): credit is ProfessionalCredit {
+    return !!credit && credit.type === 'PROFESSIONAL';
+  }
 }
