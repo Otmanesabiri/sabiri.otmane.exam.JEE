@@ -31,4 +31,10 @@ export class StorageService {
       localStorage.clear();
     }
   }
+
+  public getToken(): string | null {
+   
+    return window.localStorage.getItem('auth-token');
+  }
+
 }

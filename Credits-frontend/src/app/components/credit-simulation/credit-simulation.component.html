@@ -1,0 +1,250 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h2>Credit Simulation</h2>
+      <p class="text-muted">
+        Simulate different credit scenarios to understand monthly payments and total costs.
+      </p>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Simulation Form -->
+    <div class="col-lg-5">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Simulation Parameters</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-4">
+            <label class="form-label">Credit Type</label>
+            <div class="btn-group w-100" role="group">
+              <input 
+                type="radio" 
+                class="btn-check" 
+                name="creditTypeBtn" 
+                id="personalCreditBtn" 
+                [(ngModel)]="creditType" 
+                value="personal" 
+                (change)="onCreditTypeChange()"
+              >
+              <label class="btn btn-outline-primary" for="personalCreditBtn">
+                <i class="bi bi-person"></i> Personal
+              </label>
+              
+              <input 
+                type="radio" 
+                class="btn-check" 
+                name="creditTypeBtn" 
+                id="mortgageCreditBtn" 
+                [(ngModel)]="creditType" 
+                value="mortgage" 
+                (change)="onCreditTypeChange()"
+              >
+              <label class="btn btn-outline-primary" for="mortgageCreditBtn">
+                <i class="bi bi-house"></i> Mortgage
+              </label>
+              
+              <input 
+                type="radio" 
+                class="btn-check" 
+                name="creditTypeBtn" 
+                id="professionalCreditBtn" 
+                [(ngModel)]="creditType" 
+                value="professional" 
+                (change)="onCreditTypeChange()"
+              >
+              <label class="btn btn-outline-primary" for="professionalCreditBtn">
+                <i class="bi bi-briefcase"></i> Professional
+              </label>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="amount" class="form-label">
+              Amount
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input 
+                type="number" 
+                class="form-control" 
+                id="amount" 
+                [(ngModel)]="amount" 
+                (change)="calculateLoan()"
+                min="1000"
+              >
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="duration" class="form-label">
+              Duration ({{ getDurationRangeText() }})
+            </label>
+            <div class="input-group">
+              <input 
+                type="range" 
+                class="form-range" 
+                id="duration" 
+                [(ngModel)]="duration" 
+                [min]="durations[creditType].min" 
+                [max]="durations[creditType].max" 
+                (change)="calculateLoan()"
+                style="width: 100%;"
+              >
+            </div>
+            <div class="text-center mt-2">
+              <span class="badge bg-secondary">{{ duration }} months</span>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="interestRate" class="form-label">
+              Interest Rate ({{ getInterestRangeText() }})
+            </label>
+            <div class="input-group">
+              <input 
+                type="range" 
+                class="form-range" 
+                id="interestRate" 
+                [(ngModel)]="interestRate" 
+                [min]="interestRates[creditType].min" 
+                [max]="interestRates[creditType].max" 
+                step="0.001" 
+                (change)="calculateLoan()"
+                style="width: 100%;"
+              >
+            </div>
+            <div class="text-center mt-2">
+              <span class="badge bg-secondary">{{ formatPercent(interestRate) }}</span>
+            </div>
+          </div>
+          
+          <div class="mb-3" *ngIf="creditType === 'mortgage'">
+            <label for="propertyType" class="form-label">Property Type</label>
+            <select 
+              id="propertyType" 
+              class="form-select"
+              [(ngModel)]="propertyType"
+            >
+              <option *ngFor="let type of propertyTypes" [value]="type">
+                {{ type.replace('_', ' ') | titlecase }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="d-grid">
+            <button class="btn btn-primary btn-lg" (click)="calculateLoan()">
+              <i class="bi bi-calculator"></i> Calculate
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Results -->
+    <div class="col-lg-7">
+      <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">Simulation Results</h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-md-4 mb-4">
+              <div class="result-card">
+                <p class="text-muted mb-1">Monthly Payment</p>
+                <h2 class="mb-0">{{ monthlyPayment | currency }}</h2>
+              </div>
+            </div>
+            <div class="col-md-4 mb-4">
+              <div class="result-card">
+                <p class="text-muted mb-1">Total Payment</p>
+                <h2 class="mb-0">{{ totalPayment | currency }}</h2>
+              </div>
+            </div>
+            <div class="col-md-4 mb-4">
+              <div class="result-card">
+                <p class="text-muted mb-1">Total Interest</p>
+                <h2 class="mb-0">{{ totalInterest | currency }}</h2>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row mt-3">
+            <div class="col-12">
+              <h5>Payment Breakdown</h5>
+              <div class="progress mb-3" style="height: 25px;">
+                <div 
+                  class="progress-bar bg-primary" 
+                  role="progressbar"
+                  [style.width]="(amount / totalPayment * 100) + '%'"
+                  [attr.aria-valuenow]="amount / totalPayment * 100"
+                  aria-valuemin="0" 
+                  aria-valuemax="100"
+                >
+                  Principal {{ (amount / totalPayment * 100) | number:'1.0-0' }}%
+                </div>
+                <div 
+                  class="progress-bar bg-warning" 
+                  role="progressbar"
+                  [style.width]="(totalInterest / totalPayment * 100) + '%'"
+                  [attr.aria-valuenow]="totalInterest / totalPayment * 100"
+                  aria-valuemin="0" 
+                  aria-valuemax="100"
+                >
+                  Interest {{ (totalInterest / totalPayment * 100) | number:'1.0-0' }}%
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4">
+            <h5>Amortization Schedule</h5>
+            
+            <!-- First few months -->
+            <div class="table-responsive">
+              <table class="table table-sm table-striped">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Payment Date</th>
+                    <th>Payment</th>
+                    <th>Principal</th>
+                    <th>Interest</th>
+                    <th>Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of schedule.slice(0, showFullSchedule ? schedule.length : 5)">
+                    <td>{{ row.month }}</td>
+                    <td>{{ row.paymentDate | date:'mediumDate' }}</td>
+                    <td>{{ row.payment | currency }}</td>
+                    <td>{{ row.principal | currency }}</td>
+                    <td>{{ row.interest | currency }}</td>
+                    <td>{{ row.balance | currency }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="text-center mt-3" *ngIf="!showFullSchedule && schedule.length > 5">
+              <button class="btn btn-outline-primary" (click)="toggleSchedule()">
+                Show Full Schedule ({{ schedule.length }} months)
+              </button>
+            </div>
+            <div class="text-center mt-3" *ngIf="showFullSchedule">
+              <button class="btn btn-outline-secondary" (click)="toggleSchedule()">
+                Show Less
+              </button>
+            </div>
+          </div>
+          
+          <div class="alert alert-info mt-4">
+            <i class="bi bi-info-circle me-2"></i>
+            This simulation is for informational purposes only. Actual credit terms may vary based on your profile and bank policies. Contact your bank for accurate information.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -29,6 +29,18 @@ import { Router } from '@angular/router';
             <li class="nav-item" *ngIf="isLoggedIn">
               <a class="nav-link" routerLink="/operations" routerLinkActive="active">Operations</a>
             </li>
+            <li class="nav-item dropdown" *ngIf="isLoggedIn">
+              <a class="nav-link dropdown-toggle" href="#" id="creditDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Credits
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="creditDropdown">
+                <li><a class="dropdown-item" routerLink="/credits">All Credits</a></li>
+                <li><a class="dropdown-item" routerLink="/credits/new">New Credit</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" routerLink="/credit-simulation">Credit Simulation</a></li>
+                <li><a class="dropdown-item" routerLink="/credit-dashboard">Credit Dashboard</a></li>
+              </ul>
+            </li>
           </ul>
           <ul class="navbar-nav" *ngIf="!isLoggedIn">
             <li class="nav-item">

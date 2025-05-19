@@ -1,0 +1,321 @@
+<div class="container mt-4">
+  <!-- Loading and Error States -->
+  <div *ngIf="isLoading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading credit details...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+  
+  <!-- Success Message -->
+  <div *ngIf="repaymentSuccess" class="alert alert-success alert-dismissible fade show">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    Repayment added successfully!
+    <button type="button" class="btn-close" (click)="repaymentSuccess = false"></button>
+  </div>
+
+  <!-- Credit Details -->
+  <div *ngIf="credit && !isLoading && !errorMessage">
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <h2>{{ getCreditTypeLabel() }} #{{ credit.id }}</h2>
+        <p class="text-muted">
+          Applied on {{ credit.requestDate | date:'mediumDate' }} by 
+          <a [routerLink]="['/customers', credit.customerDTO.id]">{{ credit.customerDTO.name }}</a>
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <a [routerLink]="['/credits']" class="btn btn-outline-secondary me-2">
+          <i class="bi bi-arrow-left"></i> Back to Credits
+        </a>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Credit Information -->
+      <div class="col-lg-5 mb-4">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Credit Information</h5>
+            <span class="badge" [ngClass]="getStatusBadgeClass(credit.status)">{{ credit.status }}</span>
+          </div>
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p class="mb-1 text-muted">Amount</p>
+                <h5>{{ credit.amount | currency }}</h5>
+              </div>
+              <div class="col-md-6">
+                <p class="mb-1 text-muted">Duration</p>
+                <h5>{{ credit.duration }} months</h5>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p class="mb-1 text-muted">Interest Rate</p>
+                <h5>{{ credit.interestRate | percent:'1.2-2' }}</h5>
+              </div>
+              <div class="col-md-6">
+                <p class="mb-1 text-muted">Monthly Payment</p>
+                <h5>{{ getMonthlyPaymentAmount() | currency }}</h5>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p class="mb-1 text-muted">Request Date</p>
+                <h5>{{ credit.requestDate | date:'mediumDate' }}</h5>
+              </div>
+              <div class="col-md-6" *ngIf="credit.acceptanceDate">
+                <p class="mb-1 text-muted">Acceptance Date</p>
+                <h5>{{ credit.acceptanceDate | date:'mediumDate' }}</h5>
+              </div>
+            </div>
+            
+            <!-- Personal Credit Details -->
+            <div *ngIf="credit.type === 'PERSONAL'">
+              <div class="row mb-3">
+                <div class="col-12">
+                  <p class="mb-1 text-muted">Reason</p>
+                  <h5>{{ (credit as any).reason }}</h5>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Mortgage Credit Details -->
+            <div *ngIf="credit.type === 'MORTGAGE'">
+              <div class="row mb-3">
+                <div class="col-12">
+                  <p class="mb-1 text-muted">Property Type</p>
+                  <h5>{{ (credit as any).propertyType }}</h5>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Professional Credit Details -->
+            <div *ngIf="credit.type === 'PROFESSIONAL'">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <p class="mb-1 text-muted">Company</p>
+                  <h5>{{ (credit as any).companyName }}</h5>
+                </div>
+                <div class="col-md-6">
+                  <p class="mb-1 text-muted">Business Purpose</p>
+                  <h5>{{ (credit as any).reason }}</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Progress Card -->
+        <div class="card mt-4" *ngIf="credit.status === 'APPROVED'">
+          <div class="card-header">
+            <h5 class="mb-0">Payment Progress</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <div class="progress" style="height: 20px;">
+                <div class="progress-bar bg-success" 
+                     [style.width]="getCompletionPercentage() + '%'" 
+                     [attr.aria-valuenow]="getCompletionPercentage()" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                  {{ getCompletionPercentage() | number:'1.0-0' }}%
+                </div>
+              </div>
+            </div>
+            
+            <div class="row text-center">
+              <div class="col">
+                <p class="mb-1 text-muted">Total</p>
+                <h5>{{ credit.amount | currency }}</h5>
+              </div>
+              <div class="col">
+                <p class="mb-1 text-muted">Paid</p>
+                <h5>{{ getTotalPaidAmount() | currency }}</h5>
+              </div>
+              <div class="col">
+                <p class="mb-1 text-muted">Remaining</p>
+                <h5>{{ getRemainingAmount() | currency }}</h5>
+              </div>
+            </div>
+            
+            <div class="d-grid mt-4" *ngIf="credit.status === 'APPROVED'">
+              <button 
+                class="btn btn-primary"
+                (click)="openAmortizationTable(amortizationModal)"
+              >
+                <i class="bi bi-table"></i> View Amortization Table
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Repayments Section -->
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Repayments</h5>
+            <button 
+              *ngIf="credit.status === 'APPROVED' && !addingRepayment" 
+              class="btn btn-sm btn-primary"
+              (click)="startAddRepayment()"
+            >
+              <i class="bi bi-plus-circle"></i> Add Repayment
+            </button>
+          </div>
+          
+          <!-- Add Repayment Form -->
+          <div class="card-body" *ngIf="addingRepayment">
+            <h6>Add New Repayment</h6>
+            <form (ngSubmit)="submitRepayment()">
+              <div class="mb-3">
+                <label for="repaymentDate" class="form-label">Repayment Date</label>
+                <input 
+                  type="date" 
+                  class="form-control" 
+                  id="repaymentDate" 
+                  name="repaymentDate"
+                  [(ngModel)]="newRepayment.repaymentDate"
+                  required
+                >
+              </div>
+              
+              <div class="mb-3">
+                <label for="amount" class="form-label">Amount</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    id="amount" 
+                    name="amount"
+                    [(ngModel)]="newRepayment.amount"
+                    required
+                    min="1"
+                  >
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="type" class="form-label">Repayment Type</label>
+                <select 
+                  class="form-select" 
+                  id="type" 
+                  name="type"
+                  [(ngModel)]="newRepayment.type"
+                  required
+                >
+                  <option value="MONTHLY_PAYMENT">Monthly Payment</option>
+                  <option value="EARLY_REPAYMENT">Early Repayment</option>
+                </select>
+              </div>
+              
+              <div class="d-flex justify-content-end">
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary me-2" 
+                  (click)="cancelAddRepayment()"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  class="btn btn-primary" 
+                  [disabled]="!newRepayment.amount || isLoading"
+                >
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Submit Repayment
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Repayments List -->
+          <div class="card-body" *ngIf="!addingRepayment">
+            <div class="table-responsive" *ngIf="repayments.length > 0">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let repayment of repayments">
+                    <td>{{ repayment.repaymentDate | date:'medium' }}</td>
+                    <td>{{ repayment.amount | currency }}</td>
+                    <td>
+                      <span 
+                        class="badge"
+                        [ngClass]="repayment.type === 'MONTHLY_PAYMENT' ? 'bg-info' : 'bg-warning text-dark'"
+                      >
+                        {{ repayment.type === 'MONTHLY_PAYMENT' ? 'Monthly' : 'Early' }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div *ngIf="repayments.length === 0" class="text-center py-4">
+              <p class="text-muted">No repayments have been made yet.</p>
+              <button 
+                *ngIf="credit.status === 'APPROVED'"
+                class="btn btn-primary" 
+                (click)="startAddRepayment()"
+              >
+                <i class="bi bi-plus-circle"></i> Add First Repayment
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Amortization Table Modal -->
+<ng-template #amortizationModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Amortization Schedule</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="table-responsive">
+      <table class="table table-sm table-striped">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Payment Date</th>
+            <th>Payment</th>
+            <th>Principal</th>
+            <th>Interest</th>
+            <th>Remaining Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of amortizationSchedule">
+            <td>{{ row.month }}</td>
+            <td>{{ row.paymentDate | date:'mediumDate' }}</td>
+            <td>{{ row.payment | currency }}</td>
+            <td>{{ row.principal | currency }}</td>
+            <td>{{ row.interest | currency }}</td>
+            <td>{{ row.balance | currency }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
+  </div>
+</ng-template>

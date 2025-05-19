@@ -1,0 +1,48 @@
+.card {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.btn-check:checked + .btn-outline-primary {
+  color: #fff;
+}
+
+.invalid-feedback {
+  display: block;
+}
+
+/* Animation for form transitions */
+.card-body {
+  transition: all 0.3s ease;
+}
+
+.btn-group .btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-group .btn:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .btn-group .btn {
+    border-radius: 0.25rem !important;
+    margin-bottom: 0.5rem;
+  }
+}

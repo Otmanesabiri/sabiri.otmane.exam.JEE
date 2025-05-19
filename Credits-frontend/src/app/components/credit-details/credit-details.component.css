@@ -1,0 +1,54 @@
+.card {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 0.75rem 1.25rem;
+}
+
+.badge {
+  padding: 0.5em 0.8em;
+}
+
+.text-muted {
+  font-size: 0.85rem;
+}
+
+h5 {
+  font-weight: 500;
+}
+
+.progress {
+  background-color: #e9ecef;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Modal Styles */
+.modal-dialog {
+  max-width: 90%;
+}
+
+.modal-header, .modal-footer {
+  padding: 0.75rem 1rem;
+}
+
+/* Table tweaks */
+.table-responsive {
+  overflow-x: auto;
+}
+
+@media (max-width: 767.98px) {
+  .col-md-4 {
+    margin-bottom: 1rem;
+  }
+}

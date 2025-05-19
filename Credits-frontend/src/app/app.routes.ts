@@ -12,7 +12,12 @@ import { AccountFormComponent } from './components/account-form/account-form.com
 import { OperationsComponent } from './components/operations/operations.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { ProfileComponent } from './components/profile/profile.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component'; // Import DashboardComponent
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { CreditListComponent } from './components/credit-list/credit-list.component';
+import { CreditFormComponent } from './components/credit-form/credit-form.component';
+import { CreditDetailsComponent } from './components/credit-details/credit-details.component';
+import { CreditSimulationComponent } from './components/credit-simulation/credit-simulation.component';
+import { CreditDashboardComponent } from './components/credit-dashboard/credit-dashboard.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -71,6 +76,37 @@ export const routes: Routes = [
     path: 'profile', 
     component: ProfileComponent, 
     canActivate: [authGuard] 
+  },
+  // Credit Routes
+  {
+    path: 'credits',
+    component: CreditListComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'credits/new',
+    component: CreditFormComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'credits/new/:customerId',
+    component: CreditFormComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'credits/:id',
+    component: CreditDetailsComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'credit-simulation',
+    component: CreditSimulationComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'credit-dashboard',
+    component: CreditDashboardComponent,
+    canActivate: [authGuard]
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' } // Fallback route
