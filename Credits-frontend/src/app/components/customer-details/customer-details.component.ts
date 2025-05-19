@@ -4,6 +4,8 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { Customer } from '../../models/customer.model';
 import { BankAccount } from '../../models/account.model';
+import { CreditService } from '../../services/credit.service'; // Added
+import { Credit, Repayment } from '../../models/credit.model'; // Added
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -17,20 +19,25 @@ export class CustomerDetailsComponent implements OnInit {
   customerId: number = 0;
   customer: Customer | null = null;
   accounts: BankAccount[] = [];
+  credits: Credit[] = []; // Added
+  selectedCreditForRepayments: Credit | null = null; // Added
+  repayments: Repayment[] = []; // Added
   isLoading: boolean = true;
   errorMessage: string | null = null;
   
   constructor(
     private route: ActivatedRoute,
     private customerService: CustomerService,
+    private creditService: CreditService, // Added
     private modalService: NgbModal
   ) {}
-  
+
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.customerId = +params['id'];
       this.loadCustomerDetails();
       this.loadCustomerAccounts();
+      this.loadCustomerCredits(); // Added
     });
   }
   
@@ -55,11 +62,55 @@ export class CustomerDetailsComponent implements OnInit {
         this.accounts = data;
       },
       error: (err) => {
+        this.errorMessage = 'Error loading customer accounts'; // Set error message
         console.error('Error loading customer accounts', err);
       }
     });
   }
-  
+
+  loadCustomerCredits(): void { // Added method
+    this.creditService.getCustomerCredits(this.customerId).subscribe({
+      next: (data) => {
+        this.credits = data;
+      },
+      error: (err) => {
+        this.errorMessage = 'Error loading customer credits';
+        console.error('Error loading customer credits', err);
+      }
+    });
+  }
+
+  loadRepayments(creditId: number): void { // Added method
+    this.selectedCreditForRepayments = this.credits.find(c => c.id === creditId) || null;
+    if (this.selectedCreditForRepayments) {
+      this.creditService.getCreditRepayments(creditId).subscribe({
+        next: (data) => {
+          this.repayments = data;
+        },
+        error: (err) => {
+          this.errorMessage = `Error loading repayments for credit ${creditId}`;
+          console.error('Error loading repayments', err);
+        }
+      });
+    }
+  }
+
+  getCreditTypeLabel(type: string): string { // Added method
+    if (type === 'PersonalCredit') return 'Personal Credit';
+    if (type === 'MortgageCredit') return 'Mortgage Credit';
+    if (type === 'ProfessionalCredit') return 'Professional Credit';
+    return type;
+  }
+
+  getCreditStatusClass(status: string): string { // Added method
+    switch (status) {
+      case 'PENDING': return 'bg-warning text-dark';
+      case 'APPROVED': return 'bg-success';
+      case 'REJECTED': return 'bg-danger';
+      default: return 'bg-secondary';
+    }
+  }
+
   getAccountTypeLabel(type: string): string {
     return type === 'CurrentAccount' ? 'Current Account' : 'Saving Account';
   }

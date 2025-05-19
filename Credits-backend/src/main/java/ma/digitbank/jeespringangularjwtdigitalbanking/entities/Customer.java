@@ -20,6 +20,9 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private List<BankAccount> accounts;
     
+    @OneToMany(mappedBy = "customer")
+    private List<Credit> credits;
+    
     @Column(name = "created_by")
     private String createdBy;
     
