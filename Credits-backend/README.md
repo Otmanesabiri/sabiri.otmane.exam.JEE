@@ -156,7 +156,7 @@ Ce rapport résume l'état et la structure du système backend tel que développ
    // src/environments/environment.ts
    export const environment = {
      production: false,
-     apiUrl: 'http://localhost:8080/api'
+     apiUrl: 'http://localhost:8085/api'
    };
    ```
 

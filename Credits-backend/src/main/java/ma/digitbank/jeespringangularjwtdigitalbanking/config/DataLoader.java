@@ -1,6 +1,7 @@
 package ma.digitbank.jeespringangularjwtdigitalbanking.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.digitbank.jeespringangularjwtdigitalbanking.dtos.*;
 import ma.digitbank.jeespringangularjwtdigitalbanking.enums.AccountStatus;
 import ma.digitbank.jeespringangularjwtdigitalbanking.enums.OperationType;
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class DataLoader {
 
     private final BankAccountService bankAccountService;
